@@ -5,13 +5,14 @@
 #and saves it as Rds file in the processed_data folder
 
 #load needed packages. make sure they are installed.
-library(readxl) #for loading Excel files
+library(readr) #for loading CSV files
 library(dplyr) #for data processing
 library(here) #to set paths
+library(tidyverse)
 
 #path to data
 #note the use of the here() package and not absolute paths
-data_location <- here::here("data","raw_data","exampledata.xlsx")
+data_location <- here::here("data","raw_data","Distribution_of_COVID-19_Deaths_and_Populations__by_Jurisdiction__Age__and_Race_and_Hispanic_Origin.csv")
 
 #load data. 
 #note that for functions that come from specific packages (instead of base R)
@@ -19,37 +20,41 @@ data_location <- here::here("data","raw_data","exampledata.xlsx")
 #package::function() that's not required one could just call the function
 #specifying the package makes it clearer where the function "lives",
 #but it adds typing. You can do it either way.
-rawdata <- readxl::read_excel(data_location)
+rawdata <- readr::read_csv(data_location)
 
 #take a look at the data
 dplyr::glimpse(rawdata)
 
-#dataset is so small, we can print it to the screen.
-#that is often not possible.
-print(rawdata)
+#Creating another version of the rawdata so I can change this copy,.
+rawdata2 = rawdata
 
-# looks like we have measurements for height (in centimeters) and weight (in kilogram)
+#This is using an if else statement to change those observations with values of NA to 5.
+#The reason behind this transformation is that there is a variable called suppression which tells when a value for 
+#COVID-19 deaths is <10 for that specific Race origin, they suppress it to NA. Therefore since I want to keep these
+#observations, I changed each value to 5 because it is the middle value of the suppression.
+rawdata2$`Count of COVID-19 deaths` = ifelse(is.na(rawdata2$`Count of COVID-19 deaths`), 5 , rawdata2$`Count of COVID-19 deaths`)
 
-# there are some problems with the data: 
-# There is an entry which says "sixty" instead of a number. 
-# Does that mean it should be a numeric 60? It somehow doesn't make
-# sense since the weight is 60kg, which can't happen for a 60cm person (a baby)
-# Since we don't know how to fix this, we need to remove the person.
-# This "sixty" entry also turned all Height entries into characters instead of numeric.
-# We need to fix that too.
-# Then there is one person with a height of 6. 
-# that could be a typo, or someone mistakenly entered their height in feet.
-# Since we unfortunately don't know, we'll have to remove this person.
-# similarly, there is a person with weight of 7000, which is impossible,
-# and one person with missing weight.
-# to be able to analyze the data, we'll remove those 5 individuals
+#I changed the race origin to a factor variable to be able to use the fct_collapse command.
+rawdata2$`Race/Hispanic origin`= as_factor(rawdata2$`Race/Hispanic origin`)
 
-# this is one way of doing it. Note that if the data gets updated, 
-# we need to decide if the thresholds are ok (newborns could be <50)
+#This fct_collapse command decrease the amount of categories based on the programmers specific groups.
+#I wanted to combine the least common races so I have less small groupings
+rawdata2$`Race/Hispanic origin` = fct_collapse(rawdata2$`Race/Hispanic origin`, 
+                                               White = "Non-Hispanic White",
+                                               Black = "Non-Hispanic Black",
+                                               Asian = "Non-Hispanic Asian",
+                                               Hispanic = "Hispanic",
+                                               Other = c("Other", "Non-Hispanic Native Hawaiian or Other Pacific Islander", "Non-Hispanic American Indian or Alaska Native"))
 
-processeddata <- rawdata %>% dplyr::filter( Height != "sixty" ) %>% 
-                             dplyr::mutate(Height = as.numeric(Height)) %>% 
-                             dplyr::filter(Height > 50 & Weight < 1000)
+#This is creating the new data set processeddata. This only includes the four variables I think I want to use to run 
+#analysis on. I also removed the observations that describe the amount of COVID-19 deaths for the whole United States 
+#just to make calculations easier if wanting to do calculations based on certain categorical variables.
+processeddata <- rawdata2 %>% select(State, `Race/Hispanic origin`, `Count of COVID-19 deaths`, AgeGroup) %>% 
+  filter(AgeGroup == "All ages, unadjusted", State != "United States") 
+
+#This is just looking at a summary of the variables of the new data set.
+summary(processeddata)
+
 
 # save data as RDS
 # I suggest you save your processed and cleaned data as RDS or RDA/Rdata files. 
