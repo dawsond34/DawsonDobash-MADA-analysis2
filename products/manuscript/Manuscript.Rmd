@@ -55,18 +55,17 @@ _Continue by creating plots or tables of the outcome(s) of interest and the pred
 
 _To get some further insight into your data, if reasonable you could compute simple statistics (e.g. t-tests, simple regression model with 1 predictor, etc.) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p<0.05 means statistical significance" interpretation is not valid._
 
-Figure \@ref(fig:resultfigure) shows a scatterplot figure produced by one of the R scripts.
 
+Figure \@ref(fig:Rplot1) shows a scatterplot for number of Covid-19 deaths and State
 
-```{r summarytable,  echo=FALSE}
-knitr::include_graphics("../../results/resultfigure1.png")
+```{r Rplot1,  fig.cap='Analysis figure.', echo=FALSE}
+knitr::include_graphics("../../results/Rplot1.png")
 ```
 
+Figure \@ref(fig:Rplot2) shows a scatterplot for number of Covid-19 deaths and Race/Hispanic origin
 
-Figure \@ref(fig:resultfigure) shows a scatterplot figure produced by one of the R scripts.
-
-```{r resultfigure,  fig.cap='Analysis figure.', echo=FALSE}
-knitr::include_graphics("../../results/resultfigure.png")
+```{r Rplot2,  fig.cap='Analysis figure.', echo=FALSE}
+knitr::include_graphics("../../results/Rplot2.png")
 ```
 
 

@@ -40,14 +40,25 @@ saveRDS(summary_df, file = summarytable_file)
 
 #make a scatterplot of data
 #we also add a linear regression line to it
-p1 <- mydata %>% ggplot(aes(x=Height, y=Weight)) + geom_point() + geom_smooth(method='lm')
+p1 <- mydata %>% ggplot(aes(x=State, y=`Count of COVID-19 deaths`)) + geom_point() + geom_smooth(method='lm')
 
 #look at figure
 plot(p1)
 
 #save figure
-figure_file = here("results","resultfigure.png")
+figure_file = here("results","resultfigure1.png")
 ggsave(filename = figure_file, plot=p1) 
+
+
+p2 <- mydata %>% ggplot(aes(x=`Race/Hispanic origin`, y=`Count of COVID-19 deaths`)) + geom_point() + geom_smooth(method='lm')
+
+#look at figure
+plot(p2)
+
+#save figure
+figure_file = here("results","resultfigure.png")
+ggsave(filename = figure_file, plot=p2) 
+
 
 ######################################
 #Data fitting/statistical analysis
