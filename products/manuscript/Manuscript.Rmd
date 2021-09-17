@@ -62,7 +62,7 @@ Figure \@ref(fig:Rplot1) shows a scatterplot for number of Covid-19 deaths and S
 knitr::include_graphics("../../results/Rplot1.png")
 ```
 
-Figure \@ref(fig:Rplot2) shows a scatterplot for number of Covid-19 deaths and State
+Figure \@ref(fig:Rplot2) shows a scatterplot for number of Covid-19 deaths and Race/Hispanic origin
 
 ```{r Rplot2,  fig.cap='Analysis figure.', echo=FALSE}
 knitr::include_graphics("../../results/Rplot2.png")
